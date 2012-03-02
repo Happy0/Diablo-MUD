@@ -3,10 +3,13 @@
 #include "client.h"
 #include "socket.h"
 #include "buffer.h"
+#include "callback.h"
 
 struct client {
 	struct buffer *buffer;
 	struct sockinfo *si;
+	struct callback *callback;
+	struct login *login;
 };
 
 static struct client **clients;
@@ -52,6 +55,9 @@ int client_new(int s)
 	clients[newfd] = malloc(sizeof(struct client));
 	clients[newfd]->si = i;
 	clients[newfd]->buffer = buffer_init();
+	clients[newfd]->callback = callback_init();
+	clients[newfd]->login = login_init();
+
 	/* The server wants this fd so it can update the
 	 * file descriptor read set.
 	 */
@@ -64,9 +70,11 @@ static void client_destroy(int s)
 
 	c = clients[s];	
 	clients[s] = NULL;
-	
+		
 	socket_free(c->si);
 	buffer_free(c->buffer);
+	callback_free(c->callback);
+	login_free(c->login);
 	free(c);
 }
 
@@ -99,9 +107,13 @@ int client_handle(int s)
 	if(r)
 	{
 		printf("Client %d said '%s'\n", s, buffer_get(c->buffer));
-	//	parse();
+		callback_do(c, c->callback);
 
 	}
 	return 1;
 }
 
+struct login *client_get_login(struct client *c)
+{
+	return c->login;
+}
