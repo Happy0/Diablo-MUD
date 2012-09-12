@@ -47,4 +47,11 @@ int hashtable_add(const char *key, void *payload)
 }
 
 
-int hash ( 
+int hash (const char *key, int table_size) 
+{
+	/*  SDBM hash function */
+	long h = 0;
+	while (*key) h+=*key++ + (h<<6) + (h<<16) - h;
+
+	return h % table_size;
+}
