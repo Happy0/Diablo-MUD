@@ -2,17 +2,23 @@
 #include <stdlib.h>
 #include "hashtable.h"
 
+#define MAX_SLOTS 4
+
+static int hash (const char *key, int table_size);
+
 typedef struct hash_item hash_item;
 typedef struct linked_list linked_list;
 
 struct hash_item {
-	char *key;
+	const char *key;
 	void *payload;
 	struct hash_item *next;
+	struct hash_item *prev;
 };
 
 struct linked_list {
 	struct hash_item *head;
+	struct hash_item *tail;
 	int size;
 };
 
@@ -38,6 +44,7 @@ hashtable *hashtable_init(int initial_capacity)
 	{
 		ll = malloc (sizeof(struct linked_list));		
 		ll->head = NULL;
+		ll->tail = NULL;
 		ll->size = 0;
 
 		*(items + i) = ll;
@@ -49,9 +56,34 @@ hashtable *hashtable_init(int initial_capacity)
 	return table; 
 }
 
-int hashtable_add(const char *key, void *payload)
+int hashtable_add(hashtable *ht, const char *key, void *payload)
 {
+	int bucket_no;
+	linked_list *ll;
+	
+	bucket_no = hash(key, ht->size);
+	ll = *( (ht->items) + bucket_no);
+	
+	/* First item in this bucket*/
+	if (ll->head == NULL)
+	{
+		hash_item *item = malloc(sizeof(hash_item));
+		item->key = key;
+		item->payload = payload;		
+		item->prev = NULL;
+		item->next = NULL;
 
+		/* Set the head to this item */
+		ll->head = item;
+		ll->size = 1;
+	}
+
+	return 1;		
+
+}
+
+void hashtable_print(hashtable *table) 
+{
 
 }
 
@@ -70,7 +102,7 @@ void hashtable_destroy(hashtable *ht)
 
 }
 
-int hash (const char *key, int table_size) 
+static int hash (const char *key, int table_size) 
 {
 	/*  SDBM hash function */
 	long h = 0;

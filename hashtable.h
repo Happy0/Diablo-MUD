@@ -8,7 +8,7 @@ hashtable *hashtable_init(int initial_size);
 
 /* Adds entry to the hashtable
  * Returns True if successful, and False if operation failed */
-int hashtable_add(const char *key, void *payload);
+int hashtable_add(hashtable *ht, const char *key, void *payload);
 
 /* Returns a pointer to the payload. Returns NULL if the key is not present. */
 void *hashtable_get(const char *key);
