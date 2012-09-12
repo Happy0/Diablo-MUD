@@ -26,7 +26,7 @@ struct hashtable {
 hashtable *hashtable_init(int initial_capacity) 
 {
 	hashtable *table;
-	hash_item **items;
+	linked_list **items;
 	
 	table = malloc(sizeof(hashtable));
 	items = calloc(initial_capacity, sizeof(struct linked_list *));
