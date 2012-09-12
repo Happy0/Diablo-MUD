@@ -25,6 +25,7 @@ hashtable *hashtable_init(int initial_capacity)
 	table = malloc(sizeof(hashtable));
 	items = calloc(initial_size, sizeof(struct linked_list *));
 	
+	/* Initialise the buckets */
 	int i;
 	for (i = 0; i < initial_capacity; i++) 
 	{
@@ -39,11 +40,11 @@ hashtable *hashtable_init(int initial_capacity)
 	return table; 
 }
 
-int hashtable_add(void *key, void *payload)
+int hashtable_add(const char *key, void *payload)
 {
 
 
 }
 
 
-int hash (void 
+int hash ( 
