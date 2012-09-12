@@ -21,4 +21,6 @@ void *hashtable_get(const char *key);
 void *hashtable_delete(const char *key);
 
 /** Frees the hashtable */
-void hashtable_destroy(hashtable* ht);
+void hashtable_destroy(hashtable *ht);
+
+#endif
