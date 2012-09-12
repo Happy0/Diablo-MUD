@@ -12,7 +12,7 @@ struct linked_list {
 };
 
 struct hash_item {
-	void *key;
+	char *key;
 	void *payload;
 	hash_item *next;
 }:
@@ -24,9 +24,17 @@ hashtable *hashtable_init(int initial_capacity)
 	
 	table = malloc(sizeof(hashtable));
 	items = calloc(initial_size, sizeof(struct linked_list *));
+	
+	int i;
+	for (i = 0; i < initial_capacity; i++) 
+	{
+		linked_list ll = items + 1;
+		ll->head = NULL;
+		ll->size = 0;
+	} 
 
 	table->items = items;
-	table->size = size;
+	table->size = 0;
 
 	return table; 
 }
