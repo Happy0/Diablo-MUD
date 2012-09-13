@@ -113,7 +113,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 			free(item);
 			return -1;
 		} 
-
+	}
 	return 1;		
 
 }
