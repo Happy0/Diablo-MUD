@@ -1,6 +1,8 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
+#define MAX_BUCKET_SIZE = 4;
+
 typedef struct hashtable hashtable;
 
 /* Creates a hashtable with the capacity for the specified number of items */

@@ -60,22 +60,38 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 {
 	int bucket_no;
 	linked_list *ll;
-	
+	hash_item *item;	
+
 	bucket_no = hash(key, ht->size);
 	ll = *( (ht->items) + bucket_no);
+
+	item = malloc(sizeof(hash_item));
+	item->key = key;
+	item->payload = payload;	
 	
 	/* First item in this bucket*/
 	if (ll->head == NULL)
-	{
-		hash_item *item = malloc(sizeof(hash_item));
-		item->key = key;
-		item->payload = payload;		
+	{		
 		item->prev = NULL;
 		item->next = NULL;
 
 		/* Set the head to this item */
 		ll->head = item;
 		ll->size = 1;
+	} 
+	/* If there is room in the bucket, add it at the tail of the linked list */
+	else if (ll->size < MAX_BUCKET_SIZE) 
+	{
+		ll->tail->next = item;
+		item->prev = ll->tail;
+		item->next = NULL;
+		ll->tail = item;					
+		ll->size +=1;	
+	}
+	else
+	/* There isn't room in the bucket, expand the hashtable */
+	{
+
 	}
 
 	return 1;		
