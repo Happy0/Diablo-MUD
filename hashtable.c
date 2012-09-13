@@ -24,7 +24,8 @@ struct linked_list {
 
 struct hashtable {
 	struct linked_list **items;
-	int size;
+	int no_buckets;
+	int no_items;
 };
 
 
@@ -51,7 +52,8 @@ hashtable *hashtable_init(int initial_capacity)
 	} 
 
 	table->items = items;
-	table->size = 0;
+	table->no_buckets = 0;
+	table->no_items = 0;
 
 	return table; 
 }
@@ -66,7 +68,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	if (hashtable_get(key) == NULL)
 		return 0;
 
-	bucket_no = hash(key, ht->size);
+	bucket_no = hash(key, ht->no_buckets);
 	ll = *( (ht->items) + bucket_no);
 
 	item = malloc(sizeof(hash_item));
@@ -86,6 +88,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 		/* Set the head to this item */
 		ll->head = item;
 		ll->size = 1;
+		ht->no_items+=1;
 	} 
 	/* If there is room in the bucket, add it at the tail of the linked list */
 	else if (ll->size < MAX_BUCKET_SIZE) 
@@ -94,17 +97,18 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 		item->prev = ll->tail;
 		item->next = NULL;
 		ll->tail = item;					
-		ll->size +=1;	
+		ll->size +=1;
+		ht->no_items++;
 	}
 	else
 	/* There isn't room in the bucket, expand the hashtable */
 	{
 		hashtable *ht;
-		ht = realloc(ht, ht->size * 2);
+		ht = realloc(ht, ht->no_buckets * 2);
 		
 		if (ht != NULL)
 		{
-			ht->size *= 2;
+			ht->no_buckets *= 2;
 			hashtable_add(ht, key, payload);
 		}
 		else
@@ -118,9 +122,31 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 
 }
 
-void hashtable_print(hashtable *table) 
+/* Prints the contents of the hashtable. Assumes the payload is a char* */
+static void debug_hashtable_print(hashtable *table) 
 {
+	int i;
+	for (i = 0; i < table->no_buckets; i++)
+	{
+		linked_list *ll;
+		ll = *(table->items) + i;
 
+		if (ll->size == 0)
+		{
+			printf("%d -> EMPTY\n", i);
+		}
+		else
+		{
+			hash_item *current;
+			current = ll->head;			
+			while (current != NULL)
+			{
+				printf("%s, ");
+				current = current->next;
+			}	
+			printf("\n");
+		}
+	}
 }
 
 void *hashtable_get(const char *key)
@@ -146,3 +172,13 @@ static int hash(const char *key, int table_size)
 
 	return h % table_size;
 }
+
+/* Test */
+int main(int argc, char **argv)
+{
+
+
+
+}
+
+
