@@ -1,7 +1,7 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#define MAX_BUCKET_SIZE = 4;
+#define MAX_BUCKET_SIZE 4
 
 typedef struct hashtable hashtable;
 
@@ -9,7 +9,9 @@ typedef struct hashtable hashtable;
 hashtable *hashtable_init(int initial_size);
 
 /* Adds entry to the hashtable
- * Returns True if successful, and False if operation failed */
+ * Returns True if successful, and False if operation failed
+ *
+ * Returns -1 if there was not enough memory to add the item */
 int hashtable_add(hashtable *ht, const char *key, void *payload);
 
 /* Returns a pointer to the payload. Returns NULL if the key is not present. */

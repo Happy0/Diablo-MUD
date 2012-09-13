@@ -4,7 +4,7 @@
 
 #define MAX_SLOTS 4
 
-static int hash (const char *key, int table_size);
+static int hash(const char *key, int table_size);
 
 typedef struct hash_item hash_item;
 typedef struct linked_list linked_list;
@@ -62,10 +62,18 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	linked_list *ll;
 	hash_item *item;	
 
+	/* If the key already exists in the hashtable, return False */
+	if (hashtable_get(key) == NULL)
+		return 0;
+
 	bucket_no = hash(key, ht->size);
 	ll = *( (ht->items) + bucket_no);
 
 	item = malloc(sizeof(hash_item));
+
+	if (item == NULL)
+		return -1;
+
 	item->key = key;
 	item->payload = payload;	
 	
@@ -91,8 +99,20 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	else
 	/* There isn't room in the bucket, expand the hashtable */
 	{
-
-	}
+		hashtable *ht;
+		ht = realloc(ht, ht->size * 2);
+		
+		if (ht != NULL)
+		{
+			ht->size *= 2;
+			hashtable_add(ht, key, payload);
+		}
+		else
+		{
+		/* There wasn't enough memory for the reallocation */	
+			free(item);
+			return -1;
+		} 
 
 	return 1;		
 
@@ -118,7 +138,7 @@ void hashtable_destroy(hashtable *ht)
 
 }
 
-static int hash (const char *key, int table_size) 
+static int hash(const char *key, int table_size) 
 {
 	/*  SDBM hash function */
 	long h = 0;
