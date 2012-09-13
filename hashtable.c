@@ -176,7 +176,12 @@ static int hash(const char *key, int table_size)
 /* Test */
 int main(int argc, char **argv)
 {
+	hashtable *ht;
+	ht = hashtable_init(10);
+	
+	hashtable_add(ht, "key", "data");
 
+	debug_hashtable_print(ht);	
 
 
 }
