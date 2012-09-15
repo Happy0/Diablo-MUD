@@ -89,6 +89,11 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 		ll->head = item;
 		ll->size = 1;
 		ht->no_items+=1;
+
+		#ifdef HASH_DEBUG
+		printf("Added at head\n");
+
+		#endif
 	} 
 	/* If there is room in the bucket, add it at the tail of the linked list */
 	else if (ll->size < MAX_BUCKET_SIZE) 
@@ -102,8 +107,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	}
 	else
 	/* There isn't room in the bucket, expand the hashtable */
-	{
-		hashtable *ht;
+	{	
 		ht = realloc(ht, ht->no_buckets * 2);
 		
 		if (ht != NULL)
@@ -138,10 +142,12 @@ static void debug_hashtable_print(hashtable *table)
 		else
 		{
 			hash_item *current;
-			current = ll->head;			
+			current = ll->head;
+
+			printf("%d -> ", i);
 			while (current != NULL)
 			{
-				printf("%s, ", current->payload);
+				printf("%s, ", (char *) current->payload);
 				current = current->next;
 			}	
 			printf("\n");
@@ -178,13 +184,17 @@ static int hash(const char *key, int table_size)
 /* Test */
 int main(int argc, char **argv)
 {
+	int r; int second;
 	hashtable *ht;
 	ht = hashtable_init(10);
 	
-	hashtable_add(ht, "key", "data");
+	
+	r = hashtable_add(ht, "key", "data");
 
 	debug_hashtable_print(ht);	
+	printf("r was: %d\n", r);
 
+	second = hashtable_add(ht, "key2", "data2");
 
 }
 
