@@ -65,7 +65,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	hash_item *item;	
 
 	/* If the key already exists in the hashtable, return False */
-	if (hashtable_get(key) == NULL)
+	if (hashtable_get(key) != NULL)
 		return 0;
 
 	bucket_no = hash(key, ht->no_buckets);
@@ -157,7 +157,7 @@ static void debug_hashtable_print(hashtable *table)
 
 void *hashtable_get(const char *key)
 {
-
+	return NULL;
 }
 
 void *hashtable_delete(const char *key)
