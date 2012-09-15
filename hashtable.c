@@ -52,7 +52,7 @@ hashtable *hashtable_init(int initial_capacity)
 	} 
 
 	table->items = items;
-	table->no_buckets = 0;
+	table->no_buckets = initial_capacity;
 	table->no_items = 0;
 
 	return table; 
@@ -141,7 +141,7 @@ static void debug_hashtable_print(hashtable *table)
 			current = ll->head;			
 			while (current != NULL)
 			{
-				printf("%s, ");
+				printf("%s, ", current->payload);
 				current = current->next;
 			}	
 			printf("\n");
@@ -173,6 +173,8 @@ static int hash(const char *key, int table_size)
 	return h % table_size;
 }
 
+#ifdef HASH_DEBUG
+
 /* Test */
 int main(int argc, char **argv)
 {
@@ -186,4 +188,5 @@ int main(int argc, char **argv)
 
 }
 
+#endif
 
