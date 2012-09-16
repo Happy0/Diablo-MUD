@@ -5,6 +5,7 @@
 #define MAX_SLOTS 4
 
 static int hash(const char *key, int table_size);
+static hashtable *expand_table(hashtable *ht, int expand_to);
 
 typedef struct hash_item hash_item;
 typedef struct linked_list linked_list;
@@ -13,7 +14,6 @@ struct hash_item {
 	const char *key;
 	void *payload;
 	struct hash_item *next;
-	struct hash_item *prev;
 };
 
 struct linked_list {
@@ -81,8 +81,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	
 	/* First item in this bucket*/
 	if (ll->head == NULL)
-	{		
-		item->prev = NULL;
+	{
 		item->next = NULL;
 
 		/* Set the head to this item */
@@ -99,7 +98,6 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	else if (ll->size < MAX_BUCKET_SIZE) 
 	{
 		ll->tail->next = item;
-		item->prev = ll->tail;
 		item->next = NULL;
 		ll->tail = item;					
 		ll->size +=1;
@@ -108,11 +106,13 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	else
 	/* There isn't room in the bucket, expand the hashtable */
 	{	
-		ht = realloc(ht, ht->no_buckets * 2);
+		/* TODO: Think about whether expansion policy is sensible. 
+ 		* Should it instead go by load factor, rather than full bucket? */
+	
+		ht = expand_table(ht, ht->no_buckets*2);
 		
 		if (ht != NULL)
 		{
-			ht->no_buckets *= 2;
 			hashtable_add(ht, key, payload);
 		}
 		else
@@ -124,6 +124,50 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	}
 	return 1;		
 
+}
+
+/* Expands the hashtable to have more buckets. The number of buckets is
+ * specified by 'expand_to' 
+ *
+ * The members of the old table are added to the new table. The old table 'ht'
+ * is freed. The new table is returned. 
+ *
+ * 'NULL' is returned if there was not enough memory to allocate for the new hashtable*/
+static hashtable *expand_table(hashtable *ht, int expand_to)
+{
+	hashtable *newht;
+	int r;
+	newht = malloc(expand_to);
+
+	if (r == 0)
+		return NULL;
+
+	/* Copy the old table to the new table, rehashing its members */
+	int i;
+	for (i = 0; i < ht->no_buckets; i++)
+	{
+		linked_list *ll;
+		ll = ht->items[i];
+
+		if (!(ll->size == 0))
+		{
+			hash_item *current;
+			current = ll->head;
+
+			while (current != NULL)
+			{
+				hashtable_add(newht, current->key, current->payload);
+				current = current->next;
+			}
+		}
+	}
+	
+
+	/* Free the old hashtable */
+	hashtable_destroy(ht);	
+	
+	return newht;
+	
 }
 
 /* Prints the contents of the hashtable. Assumes the payload is a char* */
@@ -147,7 +191,7 @@ static void debug_hashtable_print(hashtable *table)
 			printf("%d -> ", i);
 			while (current != NULL)
 			{
-				printf("%s, ", (char *) current->payload);
+				printf("{%s,%s} ", (char *) current->key, (char *) current->payload);
 				current = current->next;
 			}	
 			printf("\n");
