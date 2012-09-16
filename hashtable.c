@@ -227,6 +227,36 @@ void *hashtable_get(hashtable *ht, const char *key)
 void *hashtable_delete(hashtable *ht, const char *key)
 {
 
+	linked_list *ll;
+	hash_item *current;
+	hash_item *prev;
+	
+	int hash_no;
+
+	hash_no = hash(key, ht->no_buckets);
+	ll = ht->items[hash_no];
+
+	current = ll->head;
+	prev = NULL;
+
+	/* Iterate over the linked list until we find the desired key */
+	while (current != NULL)
+	{
+		if (current->key == key)
+		{
+			prev->next = current->next;
+		
+		
+			ht->no_items--;
+			ll->size--;
+			return current->payload;		
+		}	
+		prev = current;	
+		current = current->next;
+	}	
+
+	/* The item isn't resident in the table */	
+	return NULL;
 }
 
 void hashtable_destroy(hashtable *ht)
