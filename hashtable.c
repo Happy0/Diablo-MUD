@@ -133,7 +133,7 @@ static void debug_hashtable_print(hashtable *table)
 	for (i = 0; i < table->no_buckets; i++)
 	{
 		linked_list *ll;
-		ll = *(table->items) + i;
+		ll = table->items[i];
 
 		if (ll->size == 0)
 		{
