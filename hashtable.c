@@ -65,7 +65,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	hash_item *item;	
 
 	/* If the key already exists in the hashtable, return False */
-	if (hashtable_get(key) != NULL)
+	if (hashtable_get(ht, key) != NULL)
 		return 0;
 
 	bucket_no = hash(key, ht->no_buckets);
@@ -139,7 +139,7 @@ static hashtable *expand_table(hashtable *ht, int expand_to)
 	int r;
 	newht = malloc(expand_to);
 
-	if (r == 0)
+	if (newht == NULL)
 		return NULL;
 
 	/* Copy the old table to the new table, rehashing its members */
@@ -199,12 +199,32 @@ static void debug_hashtable_print(hashtable *table)
 	}
 }
 
-void *hashtable_get(const char *key)
+void *hashtable_get(hashtable *ht, const char *key)
 {
+	linked_list *ll;
+	hash_item *current;
+	int hash_no;
+
+	hash_no = hash(key, ht->no_buckets);
+	ll = ht->items[hash_no];
+
+	current = ll->head;
+
+	/* Iterate over the linked list until we find the desired key */
+	while (current != NULL)
+	{
+		if (current->key == key)
+		{
+			return current->payload;
+		}	
+		current = current->next;
+	}	
+
+	/* The item isn't resident in the table */	
 	return NULL;
 }
 
-void *hashtable_delete(const char *key)
+void *hashtable_delete(hashtable *ht, const char *key)
 {
 
 }
@@ -239,7 +259,8 @@ int main(int argc, char **argv)
 	printf("r was: %d\n", r);
 
 	second = hashtable_add(ht, "key2", "data2");
-
+	
+	return 1;
 }
 
 #endif

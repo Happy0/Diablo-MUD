@@ -17,14 +17,14 @@ hashtable *hashtable_init(int initial_size);
 int hashtable_add(hashtable *ht, const char *key, void *payload);
 
 /* Returns a pointer to the payload. Returns NULL if the key is not present. */
-void *hashtable_get(const char *key);
+void *hashtable_get(hashtable *ht, const char *key);
 
 /* Removes the entry with the given key from the hashtable.
  * Returns the payload associated with the key.
  *
  * Returns NULL if the key is not present in the hashtable. 
  */
-void *hashtable_delete(const char *key);
+void *hashtable_delete(hashtable *ht, const char *key);
 
 /** Frees the hashtable */
 void hashtable_destroy(hashtable *ht);
