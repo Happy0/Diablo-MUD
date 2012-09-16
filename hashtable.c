@@ -249,7 +249,14 @@ void *hashtable_delete(hashtable *ht, const char *key)
 		
 			ht->no_items--;
 			ll->size--;
-			return current->payload;		
+
+			void *pay = current->payload;
+			
+			/* Free the hash_item */
+			free(current);
+
+			/* Return the payload */
+			return pay;		
 		}	
 		prev = current;	
 		current = current->next;
@@ -261,7 +268,7 @@ void *hashtable_delete(hashtable *ht, const char *key)
 
 void hashtable_destroy(hashtable *ht)
 {
-
+	
 }
 
 static int hash(const char *key, int table_size) 
