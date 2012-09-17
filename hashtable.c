@@ -137,7 +137,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 static hashtable *expand_table(hashtable *ht, int expand_to)
 {
 	hashtable *newht;
-	newht = malloc(expand_to);
+	newht = hashtable_init(expand_to);	
 
 	if (newht == NULL)
 		return NULL;
@@ -161,7 +161,6 @@ static hashtable *expand_table(hashtable *ht, int expand_to)
 			}
 		}
 	}
-	
 
 	/* Free the old hashtable */
 	hashtable_destroy(ht);	
