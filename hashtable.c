@@ -243,8 +243,15 @@ void *hashtable_delete(hashtable *ht, const char *key)
 	{
 		if (current->key == key)
 		{
-			prev->next = current->next;
-		
+			/* Link together the remaining nodes  */
+			if (prev == NULL)
+			{
+				ll->head = NULL;
+			}
+			else 
+			{
+				prev->next = current->next;
+			}
 		
 			ht->no_items--;
 			ll->size--;
