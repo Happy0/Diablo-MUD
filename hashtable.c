@@ -317,7 +317,7 @@ int main(int argc, char **argv)
 {
 	int r; int second;
 	hashtable *ht;
-	ht = hashtable_init(10);
+	ht = hashtable_init(2);
 	
 	
 	r = hashtable_add(ht, "key", "data");
@@ -325,13 +325,26 @@ int main(int argc, char **argv)
 	debug_hashtable_print(ht);	
 	printf("r was: %d\n", r);
 
-	second = hashtable_add(ht, "key2", "data2");
+	hashtable_add(ht, "key6", "data2");
+	hashtable_add(ht, "key2", "data2");
+	
+	debug_hashtable_print(ht);	
+	hashtable_add(ht, "key3", "data2");
 
+	debug_hashtable_print(ht);	
+	hashtable_add(ht, "key4", "data2");
+	hashtable_add(ht, "key5", "data2");
+	hashtable_add(ht, "key", "data2");
+	debug_hashtable_print(ht);	
+	hashtable_add(ht, "key7", "data2");
+	
 	debug_hashtable_print(ht);
 
 	hashtable_delete(ht, "key");
 
 	debug_hashtable_print(ht);
+
+	hashtable_destroy(ht);
 	
 	return 1;
 }
