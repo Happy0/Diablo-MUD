@@ -86,6 +86,7 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 
 		/* Set the head to this item */
 		ll->head = item;
+		ll->tail = item;
 		ll->size = 1;
 		ht->no_items+=1;
 
