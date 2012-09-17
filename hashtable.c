@@ -136,7 +136,6 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 static hashtable *expand_table(hashtable *ht, int expand_to)
 {
 	hashtable *newht;
-	int r;
 	newht = malloc(expand_to);
 
 	if (newht == NULL)
@@ -268,7 +267,29 @@ void *hashtable_delete(hashtable *ht, const char *key)
 
 void hashtable_destroy(hashtable *ht)
 {
-	
+	int i;
+	linked_list *ll;
+	for (i = 0; i < ht->no_buckets; i++)
+	{
+		ll = ht->items[i];
+		
+		if (ll->size == 0)
+		{
+			free(ll);
+		}
+		else
+		{
+			hash_item *current;
+			while (current != NULL)
+			{
+				hash_item *next;
+				next = current->next;
+
+				free(current);
+				current = next;		
+			}		
+		}		
+	} 
 }
 
 static int hash(const char *key, int table_size) 
@@ -296,6 +317,12 @@ int main(int argc, char **argv)
 	printf("r was: %d\n", r);
 
 	second = hashtable_add(ht, "key2", "data2");
+
+	debug_hashtable_print(ht);
+
+	hashtable_delete(ht, "key");
+
+	debug_hashtable_print(ht);
 	
 	return 1;
 }
