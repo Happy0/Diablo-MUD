@@ -196,6 +196,8 @@ static void debug_hashtable_print(hashtable *table)
 			printf("\n");
 		}
 	}
+
+	printf("------------------------------------------------------------\n");
 }
 
 void *hashtable_get(hashtable *ht, const char *key)
