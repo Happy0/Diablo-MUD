@@ -287,7 +287,9 @@ void hashtable_destroy(hashtable *ht)
 
 				free(current);
 				current = next;		
-			}		
+			}
+
+			free(ll);		
 		}		
 	} 
 }
