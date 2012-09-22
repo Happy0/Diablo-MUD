@@ -249,6 +249,7 @@ void *hashtable_delete(hashtable *ht, const char *key)
 			if (prev == NULL)
 			{
 				ll->head = NULL;
+				ll->tail = NULL;
 			}
 			else 
 			{
@@ -289,6 +290,7 @@ void hashtable_destroy(hashtable *ht)
 		else
 		{
 			hash_item *current;
+			current = ll->head;
 			while (current != NULL)
 			{
 				hash_item *next;
