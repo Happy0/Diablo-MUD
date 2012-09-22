@@ -340,6 +340,8 @@ int main(int argc, char **argv)
 	hashtable_add(ht, "key", "data2");
 	debug_hashtable_print(ht);	
 	hashtable_add(ht, "key7", "data2");
+	hashtable_add(ht, "key8", "data2");
+	hashtable_add(ht, "key9", "data2");
 	
 	debug_hashtable_print(ht);
 
