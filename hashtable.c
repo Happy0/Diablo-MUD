@@ -248,8 +248,7 @@ void *hashtable_delete(hashtable *ht, const char *key)
 			/* Link together the remaining nodes  */
 			if (prev == NULL)
 			{
-				ll->head = NULL;
-				ll->tail = NULL;
+				ll->head = ll->head->next;
 			}
 			else 
 			{
