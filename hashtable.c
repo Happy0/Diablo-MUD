@@ -5,7 +5,7 @@
 #define MAX_SLOTS 4
 
 static int hash(const char *key, int table_size);
-static hashtable *expand_table(hashtable *ht, int expand_to);
+static hashtable *expand_table(hashtable **ht, int expand_to);
 
 typedef struct hash_item hash_item;
 typedef struct linked_list linked_list;
@@ -109,8 +109,11 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
 	{	
 		/* TODO: Think about whether expansion policy is sensible. 
  		* Should it instead go by load factor, rather than full bucket? */
-	
-		ht = expand_table(ht, ht->no_buckets*2);
+		
+		hashtable** point;
+		point = &ht;
+		ht = expand_table(point, ht->no_buckets*2);
+
 		
 		if (ht != NULL)
 		{
@@ -134,10 +137,12 @@ int hashtable_add(hashtable *ht, const char *key, void *payload)
  * is freed. The new table is returned. 
  *
  * 'NULL' is returned if there was not enough memory to allocate for the new hashtable*/
-static hashtable *expand_table(hashtable *ht, int expand_to)
+static hashtable *expand_table(hashtable **hat, int expand_to)
 {
 	hashtable *newht;
+	hashtable *ht;
 	newht = hashtable_init(expand_to);	
+	ht = *hat;
 
 	if (newht == NULL)
 		return NULL;
